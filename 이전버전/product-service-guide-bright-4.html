@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>유진기업 하우징플랫폼</title>
+<style>
+  :root{
+    --navy:#0B1F3A; --navy-2:#13294B; --navy-3:#1D3A66;
+    --orange:#FF7A1A; --orange-d:#E5650A; --orange-l:#FFE6D1;
+    --bg:#F6F8FB; --text:#1B2433; --muted:#6B778C; --line:#E3E8F0; --white:#fff;
+    --radius:16px; --header-h:68px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
+  section{scroll-margin-top:var(--header-h)}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* Header */
+  header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:rgba(11,31,58,.96);backdrop-filter:blur(8px);z-index:100;box-shadow:0 2px 14px rgba(0,0,0,.2)}
+  header .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .logo{color:#fff;font-weight:800;letter-spacing:.3px;text-decoration:none;font-size:1.05rem;white-space:nowrap}
+  .logo span{color:var(--orange)}
+  nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav a{color:#C9D3E3;text-decoration:none;font-size:.95rem;font-weight:600;padding:8px 14px;border-radius:999px;white-space:nowrap;transition:.2s}
+  nav a:hover{color:#fff;background:var(--navy-3)}
+  nav a.active{color:#fff;background:var(--orange)}
+
+  /* Hero */
+  #home{padding:calc(var(--header-h) + 88px) 0 96px;color:#fff;position:relative;overflow:hidden;
+    background:radial-gradient(circle at 85% 20%,rgba(255,122,26,.35),transparent 45%),linear-gradient(135deg,var(--navy) 0%,var(--navy-3) 100%)}
+  #home::after{content:"";position:absolute;right:-120px;bottom:-160px;width:420px;height:420px;border-radius:50%;border:60px solid rgba(255,122,26,.15)}
+  .eyebrow{display:inline-block;color:var(--orange);font-weight:700;letter-spacing:2px;font-size:.8rem;margin-bottom:16px}
+  #home h1{font-size:clamp(2.2rem,5.5vw,3.8rem);line-height:1.15;font-weight:800;margin-bottom:20px}
+  #home h1 em{font-style:normal;color:var(--orange)}
+  #home p{max-width:560px;color:#C9D3E3;font-size:1.08rem;margin-bottom:32px}
+  .btn{display:inline-block;padding:14px 28px;border-radius:999px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:1rem;font-family:inherit;transition:.2s}
+  .btn-primary{background:var(--orange);color:#fff}
+  .btn-primary:hover{background:var(--orange-d);transform:translateY(-2px)}
+  .btn-ghost{color:#fff;border:1.5px solid rgba(255,255,255,.4);margin-left:10px}
+  .btn-ghost:hover{background:rgba(255,255,255,.1)}
+
+  /* Common section */
+  .block{padding:88px 0}
+  .block.alt{background:#fff}
+  .sec-head{text-align:center;margin-bottom:48px}
+  .sec-head small{color:var(--orange);font-weight:700;letter-spacing:2px;font-size:.8rem}
+  .sec-head h2{font-size:clamp(1.6rem,3.5vw,2.2rem);color:var(--navy);margin-top:6px}
+  .sec-head p{color:var(--muted);margin-top:8px}
+
+  /* Product cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+  .card{background:#fff;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;transition:.25s;position:relative}
+  .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(11,31,58,.12)}
+  .card.featured{border:2px solid var(--orange)}
+  .badge{position:absolute;top:14px;right:14px;background:var(--orange);color:#fff;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:999px;z-index:2}
+  .thumb{height:180px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:.9rem;font-weight:600;letter-spacing:1px;
+    background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 14px,transparent 14px 28px),linear-gradient(135deg,var(--navy-2),var(--navy-3))}
+  .card:nth-child(3n+2) .thumb{background:repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0 14px,transparent 14px 28px),linear-gradient(135deg,var(--orange),#FF9A4D)}
+  .card:nth-child(3n) .thumb{background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 14px,transparent 14px 28px),linear-gradient(135deg,#0A1730,var(--navy-2))}
+  .thumb svg,.thumb img{width:100%;height:100%;display:block;object-fit:cover}
+  .card-body{padding:24px;display:flex;flex-direction:column;flex:1}
+  .card h3{color:var(--navy);font-size:1.25rem}
+  .card .sub{color:var(--muted);font-size:.9rem;margin:2px 0 14px}
+  .card ul{list-style:none;margin-bottom:20px;flex:1}
+  .card li{padding:5px 0 5px 24px;position:relative;font-size:.95rem}
+  .card li::before{content:"✓";position:absolute;left:0;color:var(--orange);font-weight:800}
+  .price{font-size:1.6rem;font-weight:800;color:var(--navy);padding-top:16px;border-top:1px dashed var(--line)}
+  .price small{font-size:.85rem;font-weight:500;color:var(--muted)}
+  .card .btn{margin-top:14px;text-align:center;background:var(--navy);color:#fff}
+  .card .btn:hover{background:var(--orange)}
+
+  /* Calculator */
+  .calc{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:start}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+  .row{display:grid;grid-template-columns:1fr 110px 120px;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+  .row:last-of-type{border-bottom:0}
+  .row .name{font-weight:700;color:var(--navy)}
+  .row .name small{display:block;font-weight:400;color:var(--muted);font-size:.82rem}
+  .row .line{text-align:right;font-weight:700}
+  input[type=number],select{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;color:var(--text);background:#fff}
+  input[type=number]:focus,select:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-l)}
+  .opt{margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .opt label{font-weight:600;color:var(--navy);font-size:.95rem}
+  .opt select{width:auto;min-width:200px}
+  .sum{background:linear-gradient(160deg,var(--navy),var(--navy-3));color:#fff;border:0;position:sticky;top:calc(var(--header-h) + 20px)}
+  .sum h3{margin-bottom:16px;font-size:1.1rem}
+  .sum dl{display:grid;grid-template-columns:1fr auto;gap:10px 12px;font-size:.95rem;color:#C9D3E3}
+  .sum dd{text-align:right;color:#fff;font-weight:600}
+  .sum .total{margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.2);display:flex;justify-content:space-between;align-items:baseline}
+  .sum .total b{font-size:1.9rem;color:var(--orange)}
+  .sum .note{margin-top:14px;font-size:.8rem;color:#9FB0CB}
+  .tier{margin-top:14px;font-size:.85rem;color:var(--muted)}
+
+  /* FAQ */
+  .tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+  .tab{padding:9px 20px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--muted);font-weight:700;cursor:pointer;font-family:inherit;font-size:.92rem;transition:.2s}
+  .tab:hover{border-color:var(--orange);color:var(--orange)}
+  .tab.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .faq{max-width:820px;margin:0 auto}
+  details{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+  details[hidden]{display:none}
+  summary{cursor:pointer;padding:18px 22px;font-weight:700;color:var(--navy);list-style:none;display:flex;align-items:center;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary .cat{font-size:.72rem;background:var(--orange-l);color:var(--orange-d);padding:3px 10px;border-radius:999px;flex-shrink:0}
+  summary::after{content:"+";margin-left:auto;font-size:1.4rem;color:var(--orange);transition:.2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{padding:0 22px 20px;color:#44506A}
+
+  /* Resources */
+  .files{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .file{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .file .ico{width:52px;height:60px;border-radius:8px;background:var(--navy);color:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;flex-shrink:0}
+  .file .info{flex:1;min-width:0}
+  .file h4{color:var(--navy);font-size:1rem}
+  .file span{color:var(--muted);font-size:.82rem}
+  .file button{background:var(--orange);color:#fff;border:0;border-radius:999px;padding:10px 18px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+  .file button:hover{background:var(--orange-d)}
+
+  /* Quote mail modal */
+  .btn-mail{display:block;width:100%;margin-top:16px;background:var(--orange);color:#fff;text-align:center}
+  .btn-mail:hover{background:var(--orange-d)}
+  .modal{position:fixed;inset:0;background:rgba(11,31,58,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+  .modal.open{display:flex}
+  .dialog{background:#fff;border-radius:var(--radius);width:100%;max-width:640px;max-height:92vh;overflow:auto;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+  .dialog h3{color:var(--navy);font-size:1.3rem;margin-bottom:4px}
+  .dialog .desc{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .fgrid .full{grid-column:1/-1}
+  .field label{display:block;font-weight:700;font-size:.85rem;color:var(--navy);margin-bottom:4px}
+  .field input,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:.95rem;font-family:inherit}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-l)}
+  .field textarea{min-height:70px;resize:vertical}
+  .preview{margin:16px 0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:.88rem;white-space:pre-wrap;max-height:200px;overflow:auto;color:#44506A}
+  .msg{min-height:1.3em;font-size:.88rem;color:#C0392B;margin-bottom:8px}
+  .msg.ok{color:#1E8A4C}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+  .actions .btn{padding:12px 22px}
+  .btn-line{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+  .btn-line:hover{border-color:var(--navy)}
+  @media(max-width:560px){.fgrid{grid-template-columns:1fr}}
+
+  footer{background:var(--navy);color:#9FB0CB;text-align:center;padding:36px 24px;font-size:.88rem}
+  footer b{color:#fff}
+
+  @media(max-width:820px){
+    .calc{grid-template-columns:1fr}
+    .sum{position:static}
+    .row{grid-template-columns:1fr 90px}
+    .row .line{grid-column:1/-1;text-align:left}
+    .logo{font-size:.95rem}
+    #home{padding-top:calc(var(--header-h) + 56px)}
+    .btn-ghost{margin:10px 0 0}
+  }
+  @media(max-width:560px){ header .wrap{flex-direction:column;justify-content:center;gap:2px;padding:0 10px} :root{--header-h:92px} nav{max-width:100%} }
+
+  /* BRIGHT THEME — 산뜻하고 밝은 톤 (레이아웃·내용 유지, 색상만 덮어씀) */
+  :root{
+    --navy:#1E3A5F; --navy-2:#2F5D9B; --navy-3:#3F78C4;
+    --bg:#F4F9FF; --text:#1F2A3D; --muted:#64748B; --line:#DCE7F5; --orange-l:#FFEBDA;
+    --radius:20px;
+  }
+  body{background:var(--bg)}
+  header{background:rgba(255,255,255,.92);box-shadow:0 2px 16px rgba(47,93,155,.12);border-bottom:1px solid var(--line)}
+  .logo{color:var(--navy)}
+  nav a{color:#52627A}
+  nav a:hover{color:var(--navy);background:#EAF2FF}
+  nav a.active{color:#fff;background:var(--orange)}
+  #home{color:var(--navy);
+    background:radial-gradient(circle at 88% 18%,rgba(255,122,26,.20),transparent 42%),radial-gradient(circle at 8% 92%,rgba(63,120,196,.20),transparent 45%),linear-gradient(135deg,#F2F8FF 0%,#FFF6EC 100%)}
+  #home::after{border-color:rgba(255,122,26,.13)}
+  #home h1{color:var(--navy)}
+  #home p{color:#52627A}
+  .btn-ghost{color:var(--navy);border-color:rgba(30,58,95,.28);background:rgba(255,255,255,.6)}
+  .btn-ghost:hover{background:#fff;border-color:var(--navy-3)}
+  .block.alt{background:#fff}
+  .card{box-shadow:0 4px 18px rgba(47,93,155,.07)}
+  .card:hover{box-shadow:0 18px 40px rgba(47,93,155,.16)}
+  .thumb{color:#fff;background:repeating-linear-gradient(45deg,rgba(255,255,255,.14) 0 14px,transparent 14px 28px),linear-gradient(135deg,#8DBBF5,#5E97E3)}
+  .card:nth-child(3n+2) .thumb{background:repeating-linear-gradient(45deg,rgba(255,255,255,.18) 0 14px,transparent 14px 28px),linear-gradient(135deg,#FF8F3F,#FFB77A)}
+  .card:nth-child(3n) .thumb{background:repeating-linear-gradient(45deg,rgba(255,255,255,.14) 0 14px,transparent 14px 28px),linear-gradient(135deg,#6FB6EE,#4A8FD9)}
+  .card .btn{background:#EAF2FF;color:var(--navy)}
+  .card .btn:hover{background:var(--orange);color:#fff}
+  .panel{box-shadow:0 4px 18px rgba(47,93,155,.06)}
+  .sum{background:linear-gradient(160deg,#EAF4FF 0%,#FFF3E8 100%);color:var(--text);border:1px solid #D5E4F7}
+  .sum h3{color:var(--navy)}
+  .sum dl{color:var(--muted)}
+  .sum dd{color:var(--text)}
+  .sum .total{border-top-color:rgba(30,58,95,.14)}
+  .sum .note{color:var(--muted)}
+  .tab.on{background:var(--orange);border-color:var(--orange);color:#fff}
+  details{box-shadow:0 2px 10px rgba(47,93,155,.05)}
+  details[open]{border-color:#BBD6F7}
+  .file{box-shadow:0 4px 14px rgba(47,93,155,.06)}
+  .file .ico{background:#EAF2FF;color:var(--orange-d)}
+  .modal{background:rgba(30,58,95,.35)}
+  footer{background:#EAF2FF;color:var(--muted);border-top:1px solid var(--line)}
+  footer b{color:var(--navy)}
+
+  /* MARKET SECTIONS */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 4px 18px rgba(47,93,155,.06)}
+  .kpi small{color:var(--muted);font-size:.82rem;font-weight:600}
+  .kpi b{display:block;font-size:1.7rem;color:var(--navy);margin:4px 0 2px}
+  .up{color:#D9480F;font-weight:700}.down{color:#2F6FD0;font-weight:700}
+  .sub-h{color:var(--navy);font-size:1.2rem;margin:36px 0 6px}
+  .sub-h small{color:var(--muted);font-weight:500;font-size:.85rem;margin-left:8px}
+  .twin{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+  .box{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:0 4px 18px rgba(47,93,155,.06)}
+  .box h4{color:var(--navy);margin-bottom:10px;font-size:1.05rem}
+  .box ul{list-style:none}.box li{padding:6px 0 6px 18px;position:relative;font-size:.93rem;color:#44506A}
+  .box li::before{content:"•";position:absolute;left:2px;color:var(--orange);font-weight:800}
+  .tbl-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 4px 18px rgba(47,93,155,.06)}
+  table.data{width:100%;border-collapse:collapse;font-size:.92rem;min-width:520px}
+  table.data th{background:#EAF2FF;color:var(--navy);text-align:right;padding:11px 14px;font-weight:700}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);text-align:right;color:var(--text)}
+  table.data th:first-child,table.data td:first-child{text-align:left;font-weight:700;color:var(--navy)}
+  table.data th.l{text-align:left}
+  table.data td.l{text-align:left;font-weight:400;color:#44506A}
+  .bars{display:flex;gap:28px;align-items:flex-end;height:200px;padding:10px 6px 0}
+  .bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:.82rem;color:var(--muted);text-align:center}
+  .bar i{flex-shrink:0;display:block;width:100%;max-width:90px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#FF9A4D,#FF7A1A)}
+  .bar b{color:var(--navy);font-size:.95rem;margin-bottom:4px}
+  .src{margin-top:12px;font-size:.8rem;color:var(--muted);line-height:1.6}
+  .src a{color:var(--navy-3)}
+  .muted2{color:var(--muted);font-size:.85rem}
+  .gap{margin-top:14px;background:#FFF6EC;border:1px dashed #FFC999;border-radius:12px;padding:12px 16px;font-size:.88rem;color:#8A4A10}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#home">유진기업 <span>하우징플랫폼</span></a>
+    <nav id="nav">
+      <a href="#home" class="active">홈</a>
+      <a href="#products">제품 소개</a>
+      <a href="#permits">착공·수주</a>
+      <a href="#steel">자재 시황</a>
+      <a href="#calculator">견적 계산기</a>
+      <a href="#faq">FAQ</a>
+      <a href="#resources">자료실</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="home">
+    <div class="wrap">
+      <span class="eyebrow">WELCOME</span>
+      <h1>유진기업<br><em>하우징플랫폼</em></h1>
+      <p>철근 · 형강 · PHC 파일 · 단열재 · 시멘트 · 레미탈 · 벽돌/블록 · 타일 등 건설자재 품목과 착공·수주·자재 시황을 한눈에 확인하고, 필요한 물량만 입력해 예상 견적까지 바로 확인해 보세요.</p>
+      <a class="btn btn-primary" href="#products">제품 둘러보기</a>
+      <a class="btn btn-ghost" href="#calculator">견적 계산하기</a>
+    </div>
+  </section>
+
+  <section id="products" class="block">
+    <div class="wrap">
+      <div class="sec-head">
+        <small>PRODUCTS</small>
+        <h2>제품 소개</h2>
+        <p>현장에서 가장 많이 찾는 주요 건설자재 9개 품목입니다.</p>
+      </div>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+
+  <section id="permits" class="block alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <small>HOUSING STARTS &amp; ORDERS</small>
+        <h2>착공·인허가 · 시공사 선정(수주) 현황</h2>
+        <p>국토교통부 주택통계, 수도권 주요 건축허가, 정비사업 수주 현황 (2026.11.12 기준)</p>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><small>인허가 · 1~9월 누계</small><b>189,873호</b><span class="down">▼ 13.4% (전년 동기 대비)</span></div>
+        <div class="kpi"><small>착공 · 1~9월 누계</small><b>172,442호</b><span class="up">▲ 0.8%</span></div>
+        <div class="kpi"><small>분양 · 1~9월 누계</small><b>165,065호</b><span class="up">▲ 26.7%</span></div>
+        <div class="kpi"><small>준공 · 1~9월 누계</small><b>169,113호</b><span class="down">▼ 26.2%</span></div>
+      </div>
+
+      <h3 class="sub-h">9월 월간 실적 <small>전년 동월 대비</small></h3>
+      <div class="tbl-wrap"><table class="data">
+        <tr><th>구분</th><th>수도권</th><th>증감</th><th>비수도권</th><th>증감</th></tr>
+        <tr><td>인허가</td><td>17,620호</td><td class="down">▼ 15.2%</td><td>8,318호</td><td class="down">▼ 68.9%</td></tr>
+        <tr><td>착공</td><td>9,308호</td><td class="down">▼ 43.3%</td><td>6,738호</td><td class="down">▼ 50.2%</td></tr>
+        <tr><td>분양</td><td>6,508호</td><td class="down">▼ 47.7%</td><td>13,243호</td><td class="up">▲ 26.4%</td></tr>
+        <tr><td>준공</td><td>9,730호</td><td class="up">▲ 9.4%</td><td>8,719호</td><td class="down">▼ 35.0%</td></tr>
+      </table></div>
+
+      <h3 class="sub-h">지역별 1~9월 누계 <small>전년 동기 대비</small></h3>
+      <div class="tbl-wrap"><table class="data">
+        <tr><th>지역</th><th>인허가</th><th>증감</th><th>착공</th><th>증감</th></tr>
+        <tr><td>서울</td><td>44,371호</td><td class="up">▲ 33.3%</td><td>21,855호</td><td class="up">▲ 36.5%</td></tr>
+        <tr><td>경기</td><td>55,062호</td><td class="down">▼ 11.1%</td><td>55,143호</td><td class="down">▼ 27.0%</td></tr>
+        <tr><td>인천</td><td>14,243호</td><td class="down">▼ 14.7%</td><td>19,049호</td><td class="up">▲ 84.5%</td></tr>
+        <tr><td>수도권 계</td><td>113,676호</td><td class="up">▲ 1.5%</td><td>96,047호</td><td class="down">▼ 5.7%</td></tr>
+        <tr><td>비수도권(지방)</td><td>76,197호</td><td class="down">▼ 29.0%</td><td>76,395호</td><td class="up">▲ 10.3%</td></tr>
+      </table></div>
+
+      <div class="twin" style="margin-top:24px">
+        <div class="box"><h4>월별 흐름 (전국)</h4><ul>
+          <li><b>5월</b> 인허가 19,323호, 착공 22,717호(전년 동월 +49.3%)</li>
+          <li><b>7월</b> 인허가 25,717호(+59.6%), 착공 20,378호(-4.8%), 준공 31,778호(+24.3%)</li>
+          <li><b>8월</b> 인허가 21,607호(+25.6%) &mdash; 서울 은마아파트 약 6,000가구가 통계에 반영되어 서울 수치가 크게 늘어남</li>
+          <li><b>9월</b> 인허가 25,938호(수도권+비수도권 합산), 착공 16,046호(동일 방식 합산)</li>
+        </ul></div>
+        <div class="box"><h4>읽는 포인트</h4><ul>
+          <li>월별 수치는 정비사업 단지 반영 시점에 따라 출렁이므로, 국토부도 누계 기준으로 보는 것이 정확하다는 입장입니다.</li>
+          <li>착공은 전국 누계 기준 소폭 증가(+0.8%)이나 수도권은 감소, 지방은 증가로 엇갈립니다.</li>
+          <li>2025년 건축허가 면적 1억1,482만㎡(-8.4%), 착공 면적 8,235만㎡(-9.6%)로 전년보다 줄었습니다.</li>
+        </ul></div>
+      </div>
+      <p class="src">출처: 국토교통부 주택통계(2026.10.30 발표) &mdash; <a href="https://koreancenter.or.kr/news/articleView.html?idxno=1432077" target="_blank" rel="noopener">연합뉴스 보도(10/30)</a> · KDI 경제교육정보센터 · 파이낸셜뉴스(8월 은마 반영, 주택정책관 설명) · 베가뉴스·국토부 8/31 발표(7월), SBS Biz(2025 건축허가·착공, 2026.9.30). 9월 인허가·착공 합산치는 수도권+비수도권을 단순 합산한 값입니다.</p>
+
+      <h3 class="sub-h">주요 건축허가 건 <small>연면적 5,000~15,000㎡ · 수도권 신축 · 2026년 허가분</small></h3>
+      <div class="kpis">
+        <div class="kpi"><small>2026년 허가 (공동주택 제외)</small><b>69건</b><span class="muted2">연면적 합계 약 62만㎡</span></div>
+        <div class="kpi"><small>지역별</small><b>경기 30 · 인천 22 · 서울 17</b><span class="muted2">단위: 건</span></div>
+        <div class="kpi"><small>용도별 상위</small><b>업무시설 36건</b><span class="muted2">공장 7 · 근린생활 7 · 자동차관련 5 · 숙박 3</span></div>
+      </div>
+      <p class="src" style="margin:0 0 10px">아래 표는 2026년 6월 이후 허가 33건(허가일 최신순)입니다. 2026년 전체 69건 중 연면적 5,000~10,000㎡는 48건, 10,000~15,000㎡는 21건입니다.</p>
+      <div class="tbl-wrap" style="max-height:560px;overflow:auto"><table class="data">
+        <tr><th class="l">허가일</th><th class="l">지역</th><th class="l">대지위치</th><th class="l">주용도</th><th>연면적</th></tr>
+        <tr><td class="l">26.09.29</td><td class="l">인천</td><td class="l">인천 미추홀구 학익동 744-4 외 1필지</td><td class="l">문화및집회시설</td><td>5,243㎡</td></tr>
+        <tr><td class="l">26.09.23</td><td class="l">인천</td><td class="l">인천 검단구 당하동 1092-9</td><td class="l">업무시설</td><td>10,069㎡</td></tr>
+        <tr><td class="l">26.09.23</td><td class="l">서울</td><td class="l">서울 구로구 구로동 106-5</td><td class="l">업무시설</td><td>9,874㎡</td></tr>
+        <tr><td class="l">26.09.23</td><td class="l">서울</td><td class="l">서울 동작구 사당동 86-3 외3필지</td><td class="l">제1종근린생활시설</td><td>8,731㎡</td></tr>
+        <tr><td class="l">26.09.21</td><td class="l">인천</td><td class="l">인천 남동구 남촌동 670-2</td><td class="l">공장</td><td>13,270㎡</td></tr>
+        <tr><td class="l">26.09.14</td><td class="l">서울</td><td class="l">서울 광진구 능동 220-4</td><td class="l">미표기</td><td>5,052㎡</td></tr>
+        <tr><td class="l">26.09.11</td><td class="l">경기</td><td class="l">경기 김포시 통진읍 마송리 517-2, 3</td><td class="l">미표기</td><td>8,122㎡</td></tr>
+        <tr><td class="l">26.09.10</td><td class="l">서울</td><td class="l">서울 동대문구 장안동 364-11 외1필지</td><td class="l">업무시설</td><td>6,787㎡</td></tr>
+        <tr><td class="l">26.09.08</td><td class="l">서울</td><td class="l">서울 중구 남대문로3가 92-2 외10필지</td><td class="l">숙박시설</td><td>8,674㎡</td></tr>
+        <tr><td class="l">26.09.04</td><td class="l">서울</td><td class="l">서울 강남구 논현동 91-9</td><td class="l">제1종근린생활시설</td><td>7,258㎡</td></tr>
+        <tr><td class="l">26.09.01</td><td class="l">인천</td><td class="l">인천 검단구 오류동 1632-14</td><td class="l">공장</td><td>5,323㎡</td></tr>
+        <tr><td class="l">26.08.31</td><td class="l">서울</td><td class="l">서울 구로구 구로동 1131-4</td><td class="l">업무시설</td><td>7,435㎡</td></tr>
+        <tr><td class="l">26.08.28</td><td class="l">인천</td><td class="l">인천 영종구 운서동 3095</td><td class="l">자동차관련시설</td><td>9,180㎡</td></tr>
+        <tr><td class="l">26.08.25</td><td class="l">서울</td><td class="l">서울 마포구 연남동 227-15 외2필지</td><td class="l">미표기</td><td>8,557㎡</td></tr>
+        <tr><td class="l">26.08.19</td><td class="l">인천</td><td class="l">인천 검단구 불로동 1006-6</td><td class="l">업무시설</td><td>11,909㎡</td></tr>
+        <tr><td class="l">26.08.18</td><td class="l">경기</td><td class="l">경기 안산시 상록구 사동 1639-15</td><td class="l">수련시설</td><td>5,271㎡</td></tr>
+        <tr><td class="l">26.08.13</td><td class="l">인천</td><td class="l">인천 서해구 청라동 203-3</td><td class="l">공장</td><td>13,913㎡</td></tr>
+        <tr><td class="l">26.08.12</td><td class="l">경기</td><td class="l">경기 시흥시 신천동 705-31 외2필지</td><td class="l">업무시설</td><td>9,995㎡</td></tr>
+        <tr><td class="l">26.08.11</td><td class="l">인천</td><td class="l">인천 검단구 왕길동 검단3구역 1블럭 5로트</td><td class="l">제2종근린생활시설</td><td>9,143㎡</td></tr>
+        <tr><td class="l">26.08.11</td><td class="l">인천</td><td class="l">인천 남동구 구월동 1134-3</td><td class="l">업무시설</td><td>9,099㎡</td></tr>
+        <tr><td class="l">26.07.27</td><td class="l">경기</td><td class="l">경기 여주시 교동 654-19</td><td class="l">미표기</td><td>11,677㎡</td></tr>
+        <tr><td class="l">26.07.23</td><td class="l">인천</td><td class="l">인천 검단구 불로동 1008-1 외1필지</td><td class="l">제1종근린생활시설</td><td>14,815㎡</td></tr>
+        <tr><td class="l">26.07.21</td><td class="l">서울</td><td class="l">서울 도봉구 방학동 724-5 외 1필지</td><td class="l">자동차관련시설</td><td>7,859㎡</td></tr>
+        <tr><td class="l">26.07.10</td><td class="l">인천</td><td class="l">인천 남동구 구월동 1143-18 외5필지</td><td class="l">업무시설</td><td>14,289㎡</td></tr>
+        <tr><td class="l">26.06.24</td><td class="l">경기</td><td class="l">경기 의정부시 가능동 녹양역세권 도시개발구역 C4 6</td><td class="l">미표기</td><td>6,186㎡</td></tr>
+        <tr><td class="l">26.06.23</td><td class="l">인천</td><td class="l">인천 계양구 작전동 864-8</td><td class="l">업무시설</td><td>9,363㎡</td></tr>
+        <tr><td class="l">26.06.17</td><td class="l">경기</td><td class="l">경기 오산시 세교동 601-4</td><td class="l">업무시설</td><td>7,166㎡</td></tr>
+        <tr><td class="l">26.06.16</td><td class="l">서울</td><td class="l">서울 서초구 양재동 1-7 외2필지</td><td class="l">업무시설</td><td>7,043㎡</td></tr>
+        <tr><td class="l">26.06.16</td><td class="l">서울</td><td class="l">서울 금천구 독산동 293-7</td><td class="l">업무시설</td><td>6,327㎡</td></tr>
+        <tr><td class="l">26.06.15</td><td class="l">경기</td><td class="l">경기 성남시 분당구 서현동 253-2</td><td class="l">업무시설</td><td>11,178㎡</td></tr>
+        <tr><td class="l">26.06.12</td><td class="l">인천</td><td class="l">인천 서해구 석남동 488-5 외3필지</td><td class="l">업무시설</td><td>10,518㎡</td></tr>
+        <tr><td class="l">26.06.11</td><td class="l">경기</td><td class="l">경기 성남시 수정구 수진동 4540 외2필지</td><td class="l">교육연구시설</td><td>9,238㎡</td></tr>
+        <tr><td class="l">26.06.11</td><td class="l">경기</td><td class="l">경기 오산시 세교동 601-6</td><td class="l">업무시설</td><td>7,472㎡</td></tr>
+      </table></div>
+      <div class="gap">※ 사내 수도권 건축허가현황 파일(2024.10~ 누적)에서 연면적 5,000~15,000㎡ 신축·허가 건을 추렸습니다. 숨김·회색 음영 행과 영업 불가 거래처는 제외했고, 방문 메모·연락처·시공사 정보는 포털에 싣지 않았습니다. 이 파일에는 시공사 입찰 시점 정보가 없어 입찰일은 기재하지 못했습니다(허가 후 착공·시공사 선정은 별도 확인이 필요합니다). 주용도가 비어 있는 7건은 &lsquo;미표기&rsquo;이며, 서울·경기·인천 외 지방 건은 포함하지 않았습니다.</div>
+      <p class="src">출처: 사내 &lsquo;수도권-건축허가현황(24년10월부터 누적)&rsquo; 파일(2026.11 기준). 허가 건은 공개 건축허가 정보(대지위치·연면적·허가일·주용도)만 표기했습니다.</p>
+
+      <h3 class="sub-h">시공사 선정 · 도시정비 수주 현황 <small>시평 상위 10개사 누적 수주액, 2026.10.20 기준(뉴스토마토)</small></h3>
+      <div class="tbl-wrap"><table class="data">
+        <tr><th>순위</th><th class="l">건설사</th><th>누적 수주액</th><th class="l">주요 단지(수주액)</th></tr>
+        <tr><td>1</td><td class="l">현대건설</td><td>12조 7,315억원</td><td class="l">압구정3구역(5조 5,610억), 목동10단지(2조 6,136억), 압구정5구역(1조 472억)</td></tr>
+        <tr><td>2</td><td class="l">삼성물산</td><td>9조 6,055억원</td><td class="l">여의도 시범(2조 2,685억), 압구정4구역(2조 1,154억), 성수3지구(1조 8,275억)</td></tr>
+        <tr><td>3</td><td class="l">GS건설</td><td>5조 5,477억원</td><td class="l">성수1지구(2조 1,540억), 부산 광안5구역(9,709억)</td></tr>
+        <tr><td>4</td><td class="l">포스코이앤씨</td><td>4조 4,565억원</td><td class="l">&mdash;</td></tr>
+        <tr><td>5</td><td class="l">대우건설</td><td>4조 3,520억원</td><td class="l">상도15구역(1조 4,367억) · 11/3 누계 5조 원 돌파 보도</td></tr>
+        <tr><td>6</td><td class="l">롯데건설</td><td>4조 110억원</td><td class="l">성수4지구(1조 3,492억)</td></tr>
+        <tr><td>7</td><td class="l">IPARK현대산업개발</td><td>1조 7,666억원</td><td class="l">&mdash;</td></tr>
+        <tr><td>8</td><td class="l">DL이앤씨</td><td>1조 2,868억원</td><td class="l">목동6단지</td></tr>
+        <tr><td>9</td><td class="l">SK에코플랜트</td><td>6,114억원</td><td class="l">&mdash;</td></tr>
+        <tr><td>10</td><td class="l">현대엔지니어링</td><td>수주 없음</td><td class="l">&mdash;</td></tr>
+      </table></div>
+      <div class="twin" style="margin-top:20px">
+        <div class="box"><h4>상위 쏠림</h4><ul>
+          <li>상위 10개사 누적 도시정비 수주액은 약 44조 3,690억원이며, 현대건설과 삼성물산이 22조 3,370억원(50.3%)을 차지합니다.</li>
+          <li>2026년 정비사업 시장 규모는 약 80조 원 안팎으로 거론됩니다.</li>
+          <li>지방 중소 건설사 폐업은 1.1~9.4 기간 2,946건으로 전년 동기(2,338건)보다 26% 늘었습니다(MTN, 9/4).</li>
+        </ul></div>
+        <div class="box"><h4>다가오는 시공사 선정 일정</h4><ul>
+          <li>목동13단지(약 2조 3,763억원) &mdash; 11월</li>
+          <li>목동12단지 총회 &mdash; 11월 (GS건설 홍보관 운영 보도)</li>
+          <li>여의도 대교아파트 총회 &mdash; 11/15 (삼성물산 단독 입찰)</li>
+          <li>목동8단지 총회 &mdash; 12월 중순 (대우건설 우선협상)</li>
+          <li>부산 용호1구역(7,381억원)</li>
+          <li>광명 철산주공13단지(3,719가구) &mdash; 11/17 입찰 마감 (현설 참석: 현대건설·롯데건설·제일건설)</li>
+        </ul></div>
+      </div>
+      <p class="src">출처: 뉴스토마토(2026.10.20), 대우건설 11/3 수주 보도, MTN(2026.9.4), 하우징헤럴드(11월 재개발·재건축 시공자 선정 동향). 일정은 보도 시점 기준이며 조합 사정에 따라 변경될 수 있습니다.</p>
+    </div>
+  </section>
+
+  <section id="steel" class="block">
+    <div class="wrap">
+      <div class="sec-head">
+        <small>MARKET WATCH</small>
+        <h2>자재 가격·시장 시황</h2>
+        <p>철근 · 형강 · PHC 파일 · 시멘트 · 기타 자재 (공개 보도 기준 정리, 참고용)</p>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><small>KPI 종합건설자재지수 (10월)</small><b>153.9</b><span class="down">▼ 0.5% (전월 대비) · 전년 +10.7%</span></div>
+        <div class="kpi"><small>건설공사비지수 (8월)</small><b>138.74</b><span class="up">12개월 연속 최고 · 전년 +6.0%</span></div>
+        <div class="kpi"><small>원/달러 환율 (11월)</small><b>약 1,470원</b><span class="up">수입 원가 부담 요인</span></div>
+      </div>
+
+      <h3 class="sub-h">철근 가격 흐름 <small>국내 유통 철근, 톤당 · 출처별 기준이 달라 참고용</small></h3>
+      <div class="box">
+        <div class="bars">
+          <div class="bar"><b>65만</b><i style="height:78px"></i>2025.12<br>저점</div>
+          <div class="bar"><b>약 75만</b><i style="height:90px"></i>2026.4<br>반등</div>
+          <div class="bar"><b>84~85만</b><i style="height:102px"></i>2026.9말<br>유통 실거래</div>
+          <div class="bar"><b>76~77만</b><i style="height:92px"></i>11월 2주<br>유통시세</div>
+          <div class="bar"><b>82만</b><i style="height:98px;background:linear-gradient(180deg,#8DBBF5,#3F78C4)"></i>11월<br>동국제강 판매가</div>
+        </div>
+        <p class="src">단위: 원/톤(만 원), SD400 10mm 기준. 2025.12·2026.4는 현대차증권(알파디스틸 인용), 9월 말은 아이뉴스24(9/29), 11월 2주 유통시세는 철강금속신문(11/10), 동국제강 판매가는 스틸데일리(11/6). 출처별 기준(현금·운임 포함 여부)이 달라 직접 비교는 어렵고, 막대 높이는 값의 상대 크기입니다.</p>
+      </div>
+
+      <div class="twin" style="margin-top:20px">
+        <div class="box"><h4>제강사 입장 (보도 기준)</h4><ul>
+          <li><b>동국제강</b>: SD400 10mm 판매가를 톤당 82만 원으로 조정해 11월 2주차에도 동결하고, 주간 &lsquo;원칙 마감&rsquo; 방침을 이어갑니다. 시장 거래가(약 79만 원)보다 3만 원가량 높아 저가 경쟁 심화를 우려하는 보도입니다(스틸데일리 11/6). 10월에는 판매가를 90만 원으로 올렸습니다.</li>
+          <li><b>기준가</b>: 11월 철근 기준가는 4만 3,000원 내려 96만 3,000원으로 확정됐습니다. 2022년 8월 이후 최대 인하폭이며, 분기 중 철스크랩 가격이 9.5% 내린 것이 반영됐습니다(스틸데일리 11/2).</li>
+          <li><b>판매·재고</b>: 10월 제강사 철근 판매는 53만 톤대로 전월보다 늘었고, 11월 판매 목표는 56만 톤대, 생산계획은 전월 대비 6.0% 늘렸습니다. 재고는 32만 톤대로 부담이 이어집니다(스틸데일리 11/6).</li>
+          <li><b>현대제철</b>: 3분기 실적 설명에서 철근은 내년에도 수출 물량을 조절하겠다고 밝혔습니다(50% 관세를 내면 수익성이 안 나온다는 이유). 4분기에는 판매량이 정상 수준을 회복하고 가격 인상 효과가 온전히 반영될 것으로 기대했습니다(아이뉴스24 10/30).</li>
+          <li><b>내년 전망</b>: 제강사들은 건설투자 회복과 비주거·공공 발주 확대로 내년 철근 수요가 올해보다 20만~40만 톤, H형강은 10만 톤 이상 늘 것으로 기대합니다(스틸데일리 11/12). 주택 착공이 약해 회복은 완만할 것이라는 단서가 붙습니다.</li>
+        </ul></div>
+        <div class="box"><h4>유통시장 동향 (11월)</h4><ul>
+          <li>국산 철근 유통시세(SD400 10mm)는 11월 1주 톤당 80만~81만 원으로 시작해 78만~79만 원을 거쳐, 2주차 76만~77만 원까지 내렸습니다. 이달 낙폭은 4만 원 이상, 저점은 75만 원대입니다(철강금속신문 11/3·11/6·11/10).</li>
+          <li>유통가가 제강사 인상 대응에도 반등하지 못했고, 월초부터 선제적 매출 확보를 위한 저가 판매가 이어진다는 분석입니다.</li>
+          <li>하나증권 주간 보고서(11/9)는 철근 유통가를 톤당 82만 원(전주 대비 -1.8%)으로 집계했습니다. 조사 기준이 달라 신문 시세와 차이가 있습니다(핀포인트뉴스 11/10).</li>
+          <li>동국제강 steelshop 공시 판매가는 11/9 기준 일반철근 SD400 D10 톤당 84만 원(운임 포함, 공차운임 별도)입니다.</li>
+          <li>제강사 철스크랩 구매가도 7월 초 이후 넉 달째 인하가 이어져 누적 9차까지 내렸습니다(철강금속신문 11/10).</li>
+        </ul></div>
+      </div>
+
+      <h3 class="sub-h">유통향 vs 건설향 철근 <small>거래 구조 비교</small></h3>
+      <div class="tbl-wrap"><table class="data">
+        <tr><th>구분</th><th>유통향</th><th>건설향(건설사 직거래)</th></tr>
+        <tr><td>거래 방식</td><td class="l">유통사 경유, 고시가 기준 + 시장 할인</td><td class="l">제강사와 건설사 간 직접 계약</td></tr>
+        <tr><td>가격 결정</td><td class="l">시장 수급에 따라 실거래가 수시 변동</td><td class="l">계약 협상(월·분기 단위 등 공식 적용)</td></tr>
+        <tr><td>가격 변동성</td><td class="l">큼</td><td class="l">상대적으로 작음</td></tr>
+        <tr><td>물량 비중</td><td class="l">약 10% 수준(2025.1 아시아경제 보도, 시점 유의)</td><td class="l">나머지 대부분</td></tr>
+        <tr><td>공개 가격 정보</td><td class="l">고시가·시세 공개</td><td class="l">2026년 협상 단가는 공개 자료 확인 불가</td></tr>
+      </table></div>
+      <div class="gap">※ 건설향 철근 협상 단가는 비공개 계약이라 공개 보도에서 확인하지 못했습니다. 참고로 기준가(96만 3,000원)는 계약 협상의 기준선이며, 실제 프로젝트 계약가는 기준가에서 큰 폭 할인되는 것으로 알려져 있습니다(대한경제, 2026.3: 당시 기준가 94만 5,000원 vs 유통가 75만 5,000원, 할인폭 20만 원가량 언급). 건설향 단가는 담당자 상담을 통해 별도 안내드립니다.</div>
+
+      <h3 class="sub-h">형강 (H형강)</h3>
+      <div class="twin">
+        <div class="box"><h4>가격</h4><ul>
+          <li>동국제강 steelshop 공시 판매가(11/9, 운임 포함)는 H형강 중소형 SS275 기준 톤당 121만 원입니다. 9월 5주에는 소형 규격 고시가 약 123만 원 대비 유통 시세가 117~118만 원 수준이었습니다.</li>
+          <li>현대제철 10월 고시가 5만 원 인상. 다만 건설 경기가 약해 철근보다 인상 폭이 제한적이라는 분석(하나증권, 4/17)이 있습니다.</li>
+        </ul></div>
+        <div class="box"><h4>수입재·수요</h4><ul>
+          <li>무역위원회(9/17)가 중국산 H형강 반덤핑 관세를 5년 연장하기로 결정했습니다(28.23~32.72%). 중국산은 국산보다 20~30% 저렴합니다.</li>
+          <li>국내 3사는 브랜드를 강화 중입니다: 현대제철 &lsquo;H ONE&rsquo;, 동국제강 &lsquo;D-메가빔&rsquo;, 포스코 &lsquo;Pos-H&rsquo;.</li>
+          <li>수요 요인: AI 데이터센터, 반도체 공장 등 철골 구조 물량.</li>
+        </ul></div>
+      </div>
+
+      <h3 class="sub-h">PHC 파일</h3>
+      <div class="twin">
+        <div class="box"><h4>시장 구조</h4><ul>
+          <li>KS 표준 품목이며, 운송 효율상 약 300km를 넘으면 경제성이 떨어져 지역별 과점 구조입니다.</li>
+          <li>동양파일은 아산·익산·함안 3개 공장, 연 78만 톤 규모를 보유합니다(알파디스틸, 2026.9).</li>
+          <li>주요 경쟁사로 삼일씨엔에스, SP삼화, 아이에스동서, 정광건업 등이 거론됩니다.</li>
+        </ul></div>
+        <div class="box"><h4>수요 이슈</h4><ul>
+          <li>호남 메가프로젝트 예산 보도(9/2)로 PHC 관련주가 주목받았습니다.</li>
+          <li>포항시 관급자재 PHC 파일 입찰이 11/13 마감 예정입니다(추정가 약 1.19억원).</li>
+        </ul></div>
+      </div>
+      <div class="gap">※ PHC 파일의 공개 시세는 확인하지 못했습니다. 규격·지역·물량별 별도 견적으로 안내드립니다.</div>
+
+      <h3 class="sub-h">시멘트 · 레미콘 · 기타 자재</h3>
+      <div class="twin">
+        <div class="box"><h4>시멘트·레미콘</h4><ul>
+          <li>2025년 시멘트 내수 출하는 3,810만 톤(-12.8%)으로 1991년 이후 최저였습니다. 한일·아세아시멘트 영업이익이 절반 수준으로 줄었습니다.</li>
+          <li>업계는 2026년 내수를 약 3,600만 톤으로 보며, 올해가 바닥이고 2027년부터 점진 회복을 전망합니다(삼표시멘트 리포트, 8/7).</li>
+          <li>2026년 수도권 레미콘 단가는 ㎥당 99,600원(25-27-150 규격)으로 타결됐습니다. 규격 변경으로 전년과 단순 비교는 어렵습니다.</li>
+        </ul></div>
+        <div class="box"><h4>창호·유리·마감재 등</h4><ul>
+          <li>LX하우시스(창호·바닥재) 부진, KCC글라스 적자 전환 등 건설 경기 약세가 마감재 업계 실적에 반영되고 있습니다(헤럴드경제 3/31, MTN 10/16).</li>
+          <li>MTN(10/16)은 건자재업계의 &lsquo;달라진 생존 공식&rsquo;을 다루며 업황 부진 속 전략 변화를 보도했습니다.</li>
+        </ul></div>
+      </div>
+      <div class="gap">※ 단열재 · 타일 · 벽돌/블록의 국내 시세는 공개 자료에서 확인하지 못했습니다. 해당 품목 가격은 견적 계산기의 샘플 단가 또는 담당자 문의를 이용해 주세요.</div>
+      <p class="src">철근 시황 출처(공신력 있는 업계 전문지 위주): 스틸데일리(11/2 기준가, 11/6 동국제강 가격·11월 전망, 11/12 내년 수요 전망), 철강금속신문(11/3, 11/6, 11/10 주간 철근 시세, 철스크랩), 핀포인트뉴스·하나증권 주간 보고서(11/10), 동국제강 steelshop 공시가(11/9), 아이뉴스24(10/30 현대제철 3분기, 9/30 철강사 10월 가격 인상), 뉴스토마토(11/2 철강 3사 실적), 대한경제(2026.3 기준가·유통가 격차). 스틸데일리·철강금속신문 기사는 일부 유료여서 공개된 요약 부분만 반영했습니다. &lsquo;철근거래소&rsquo;라는 공개 시세 출처는 확인하지 못했습니다.</p>
+      <p class="src">그 밖의 출처: 현대차증권·알파디스틸 리포트(철근 2026.4, PHC 2026.9), 하나증권 주간 리포트(4/3, 4/17), 인사이트코리아(7/27), 아시아경제(2025.1), 한국물가정보 KPI 지수(kbmaeil 10/21), 한국건설기술연구원(건설공사비지수), 이투데이(11월 환율), 무역위원회 보도(딜사이트 9/22, CEO스코어데일리 9/28), 뉴데일리(2/26), 티에프(2/24), 글로벌시멘트, 산쿤(sankun) 레미콘 단가 블로그, 헤럴드경제, MTN. 본 시황은 공개 보도·리포트를 정리한 참고 자료이며 실제 거래 단가와 다를 수 있습니다.</p>
+    </div>
+  </section>
+
+  <section id="calculator" class="block alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <small>ESTIMATE</small>
+        <h2>견적 계산기</h2>
+        <p>수량을 입력하면 예상 금액이 실시간으로 계산됩니다.</p>
+      </div>
+      <div class="calc">
+        <div class="panel">
+          <div id="rows"></div>
+          <div class="opt">
+            <label for="support">운송 옵션</label>
+            <select id="support">
+              <option value="0">방문 수령 (운송비 없음)</option>
+              <option value="0.03">수도권 현장 배송 (+3%)</option>
+              <option value="0.06">지방 현장 배송 (+6%)</option>
+            </select>
+          </div>
+          <p class="tier">기타 품목은 상담 후 견적됩니다. 물량 할인(제품 금액 기준): 1천만 원 이상 3%, 5천만 원 이상 5%, 1억 원 이상 7% · 단가·할인율·운송 비율은 샘플 값입니다.</p>
+        </div>
+        <aside class="panel sum" aria-live="polite">
+          <h3>예상 견적</h3>
+          <dl>
+            <dt>제품 합계</dt><dd id="s-sub">0원</dd>
+            <dt>물량 할인 <span id="s-rate"></span></dt><dd id="s-disc">-0원</dd>
+            <dt>운송비</dt><dd id="s-sup">0원</dd>
+            <dt>공급가액</dt><dd id="s-supply">0원</dd>
+            <dt>부가세 (10%)</dt><dd id="s-vat">0원</dd>
+          </dl>
+          <div class="total"><span>총 예상 금액</span><b id="s-total">0원</b></div>
+          <p class="note">※ 참고용 예상 금액이며, 실제 견적은 상담 후 확정됩니다.</p>
+          <button type="button" class="btn btn-mail" id="openMail">견적서 메일 발송</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="block">
+    <div class="wrap">
+      <div class="sec-head">
+        <small>FAQ</small>
+        <h2>자주 묻는 질문</h2>
+        <p>카테고리를 선택해 궁금한 내용을 확인하세요.</p>
+      </div>
+      <div class="tabs" id="tabs"></div>
+      <div class="faq" id="faqList"></div>
+    </div>
+  </section>
+
+  <section id="resources" class="block alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <small>RESOURCES</small>
+        <h2>자료실</h2>
+        <p>브로슈어와 자료를 내려받으세요.</p>
+      </div>
+      <div class="files" id="files"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <b>유진기업 하우징플랫폼</b><br>
+  문의: contact@example.com · 02-0000-0000 · 평일 09:00–18:00
+</footer>
+
+<div class="modal" id="mailModal" role="dialog" aria-modal="true" aria-labelledby="mailTitle">
+  <div class="dialog">
+    <h3 id="mailTitle">견적서 메일 발송</h3>
+    <p class="desc">입력하신 정보와 현재 계산된 견적 내용이 메일 본문에 자동으로 작성됩니다.</p>
+    <div class="fgrid">
+      <div class="field full"><label for="m-to">받는 사람 (이메일)</label><input type="email" id="m-to" placeholder="example@company.com"></div>
+      <div class="field full"><label for="m-cc">참조 (선택)</label><input type="email" id="m-cc" placeholder="여러 명은 쉼표(,)로 구분"></div>
+      <div class="field"><label for="m-co">회사명</label><input type="text" id="m-co"></div>
+      <div class="field"><label for="m-nm">담당자명</label><input type="text" id="m-nm"></div>
+      <div class="field"><label for="m-tel">연락처</label><input type="text" id="m-tel" placeholder="010-0000-0000"></div>
+      <div class="field"><label for="m-site">현장명/납품지 (선택)</label><input type="text" id="m-site"></div>
+      <div class="field full"><label for="m-note">요청사항 (선택)</label><textarea id="m-note" placeholder="납품 희망일, 규격 등"></textarea></div>
+    </div>
+    <div class="preview" id="m-preview"></div>
+    <div class="msg" id="m-msg" role="alert"></div>
+    <div class="actions">
+      <button type="button" class="btn btn-line" id="m-close">닫기</button>
+      <button type="button" class="btn btn-line" id="m-copy">내용 복사</button>
+      <button type="button" class="btn btn-primary" id="m-send">메일 보내기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 데이터 (이름·가격·문구는 여기서 수정하세요) ===== */
+/* 단가는 모두 샘플 값입니다. 실제 단가로 교체해 주세요. 실제 사진은 항목에 img:"images/rebar.jpg" 처럼 추가하세요. */
+const PRODUCTS = [
+  {id:"rebar", name:"철근", sub:"SD400 이형철근 D10~D32", price:950000, unit:"톤", badge:"BEST",
+   features:["KS 인증 품질","규격·길이별 맞춤 공급","현장 절단·가공 협의","밀시트(품질증명서) 제공"]},
+  {id:"insul", name:"단열재", sub:"압출법 보온판 · 50T", price:11000, unit:"장",
+   features:["건축물 에너지 기준 대응","두께·규격별 선택","경량으로 시공 간편","현장 배송 가능"]},
+  {id:"cement", name:"시멘트", sub:"포틀랜드 1종 · 40kg 포대", price:4800, unit:"포",
+   features:["보수·소규모 공사용","팔레트 단위 공급","습기 방지 포장","방문 수령 / 현장 배송"]},
+  {id:"remitar", name:"레미탈", sub:"기성배합 모르타르 · 40kg", price:3500, unit:"포",
+   features:["물만 섞어 바로 사용","미장·조적·바닥 용도별","균일한 품질","팔레트 단위 공급"]},
+  {id:"brick", name:"벽돌/블록", sub:"시멘트벽돌 · 콘크리트블록", price:180, unit:"장",
+   features:["규격·강도별 선택","조적용 / 담장용","대량 물량 단가 협의","현장 하차 지원 협의"]},
+  {id:"tile", name:"타일", sub:"포세린 타일 · 600×600", price:20000, unit:"㎡",
+   features:["내부 · 외부 · 욕실 용도별","다양한 색상·질감","샘플 확인 가능","시공 자재(접착제 등) 문의 가능"]},
+  {id:"phc", name:"PHC 파일", sub:"PHC 말뚝 · 기초용 고강도 콘크리트 파일", price:null, unit:"",
+   features:["연약지반·고층 건물 기초 말뚝용","외경·길이별 규격 공급","운송거리를 고려한 지역 공급","현장·물량별 개별 견적"]},
+  {id:"hbeam", name:"형강 (H형강)", sub:"H형강 · 철골 구조용", price:null, unit:"",
+   features:["철골 공장·물류센터·데이터센터 구조재","소형·중형·대형 규격별 공급","시황 연동 가격 안내","현장·물량별 개별 견적"]},
+  {id:"etc", name:"기타", sub:"위 품목 외 건설자재 전반", price:null, unit:"",
+   features:["방수재 · 마감재 · 부자재 등","품목·규격별 개별 견적","담당자 상담 후 안내","납품 일정 협의"]}
+];
+
+const FAQS = [
+  {cat:"제품·구성", q:"제품 라인업은 어떻게 구성되어 있나요?", a:"베이직, 스탠다드, 프리미엄 3종입니다. 모두 같은 품질 기준으로 공급되며, 구성 범위와 지원 수준에서 차이가 있습니다."},
+  {cat:"제품·구성", q:"어떤 고객에게 어떤 제품이 맞나요?", a:"베이직은 처음 도입하는 소규모 현장, 스탠다드는 복수 현장을 운영하는 고객, 프리미엄은 대규모·장기 운영 고객에게 권장합니다."},
+  {cat:"도입·가격", q:"도입은 어떤 순서로 진행되나요?", a:"상담 요청, 현장 확인, 견적 제시, 계약 체결, 납품·설치 순으로 진행됩니다. 상담 요청부터 견적 제시까지는 영업일 기준 수일이 소요되며 현장 상황에 따라 달라질 수 있습니다."},
+  {cat:"도입·가격", q:"가격은 얼마인가요? 거래처별 할인도 적용되나요?", a:"공개 가격표는 표준 구성 기준이며 수량·납품 조건·설치 범위에 따라 달라집니다. 정확한 금액은 견적으로 안내해 드립니다. 거래처별 단가와 할인 조건은 개별 계약 사항이므로 담당 영업에게 문의해 주세요."},
+  {cat:"주문·납품", q:"소량 주문이나 샘플 제공도 가능한가요?", a:"소량 주문은 가능하나 최소 수량은 제품별로 다르므로 상담 시 확인해 주세요. 샘플 제공 여부도 제품에 따라 다르며 담당 영업과 협의합니다."},
+  {cat:"주문·납품", q:"계약 후 수량을 변경할 수 있나요? 배송·설치·교육은 어떻게 되나요?", a:"수량 변경은 출고 전까지 가능하며 출고 이후에는 별도 협의가 필요합니다. 배송은 계약 시 협의한 일정에 따라 현장으로 직접 하고, 설치 안내·현장 지원은 제품 구성에 따라 제공합니다. 납품 시 기본 사용 교육을 1회 제공합니다."},
+  {cat:"A/S·지원", q:"문의와 A/S는 어디로, 언제 접수하나요?", a:"주문·견적·납기·계약은 담당 영업, 사용 문의·고장 신고·A/S는 고객지원 채널로 접수하며 영업일 09:00~18:00 운영합니다. 홈페이지 문의는 상시 접수하고 영업일에 회신하며, 주말·공휴일 접수분은 다음 영업일에 순차 처리합니다."},
+  {cat:"A/S·지원", q:"A/S는 어떤 절차로 처리되나요?", a:"접수(제품명·구매 시기·증상·현장 위치 전달), 1차 확인(전화 또는 원격), 방문 일정 협의(필요 시), 처리 및 결과 안내 순으로 진행됩니다."},
+  {cat:"A/S·지원", q:"어떤 경우에 무상이고, 어떤 경우에 유상인가요?", a:"정상 사용 중 발생한 기능 이상(제품 하자)은 무상입니다. 낙하·침수·과부하 등 사용 부주의, 비공식 부품 교체·구조 변경 등 임의 개조, 소모품 교체는 유상입니다. 무상 처리 기간은 제품별로 다르며 납품 시 전달되는 보증 안내를 따릅니다."},
+  {cat:"반품·교환", q:"반품이나 교환이 가능한가요?", a:"미사용·미개봉 상태에서 납품일 기준 일정 기간 내 신청하면 가능하며, 담당 영업을 통해 접수합니다. 현장 사정에 의한 단순 변심 반품은 회수 비용이 발생할 수 있고, 주문 제작 제품은 원칙적으로 반품이 어렵습니다."}
+];
+
+const FILES = [
+  {tag:"PDF", title:"건설자재 종합 브로슈어", meta:"전 품목 소개 · 약 2.4MB"},
+  {tag:"PDF", title:"시멘트·레미탈 제품 안내서", meta:"용도별 선택 가이드 · 약 1.8MB"},
+  {tag:"PDF", title:"철근·단열재 규격 안내", meta:"규격표 · 약 1.5MB"},
+  {tag:"XLS", title:"단가표 및 견적 요청 양식", meta:"품목별 단가 · 약 120KB"}
+];
+
+const won = n => Math.round(n).toLocaleString("ko-KR") + "원";
+
+/* ===== 제품 이미지 (기본: 내장 일러스트 / 실제 사진은 PRODUCTS 항목에 img:"경로" 추가) ===== */
+const SVG = inner => `<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img">${inner}</svg>`;
+const bag = (label, sub, c) => SVG(`
+  <ellipse cx="160" cy="160" rx="82" ry="8" fill="#000" opacity=".18"/>
+  <path d="M104 52 Q160 40 216 52 L224 150 Q160 160 96 150 Z" fill="#F2F4F8"/>
+  <path d="M104 52 Q160 40 216 52 L218 66 Q160 56 102 66 Z" fill="#D5DBE6"/>
+  <rect x="116" y="82" width="88" height="46" rx="6" fill="${c}"/>
+  <text x="160" y="104" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="14" fill="#fff">${label}</text>
+  <text x="160" y="120" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#fff" opacity=".9">${sub}</text>`);
+const ART = {
+  rebar: SVG(`<g transform="translate(-6 18) rotate(-9 160 90)" stroke-linecap="round">${[44,64,84,104,124,144].map(y =>
+    `<line x1="30" y1="${y}" x2="270" y2="${y}" stroke="#D9DEE7" stroke-width="12"/><line x1="30" y1="${y}" x2="270" y2="${y}" stroke="#8A97AD" stroke-width="12" stroke-dasharray="2 11"/><line x1="258" y1="${y}" x2="270" y2="${y}" stroke="#FF7A1A" stroke-width="12"/>`).join("")}</g>`),
+  insul: SVG([2,1,0].map(i => { const d = 36 + i*22;
+    return `<polygon points="70,${d} 230,${d-14} 272,${d+2} 112,${d+16}" fill="#FFE6D1"/><polygon points="70,${d} 112,${d+16} 112,${d+34} 70,${d+18}" fill="#FFB37A"/><polygon points="112,${d+16} 272,${d+2} 272,${d+20} 112,${d+34}" fill="#FF9A4D"/>`; }).join("")),
+  cement: bag("CEMENT", "40kg", "#FF7A1A"),
+  remitar: bag("MORTAR", "READY-MIX", "#13294B"),
+  brick: SVG([0,1,2,3].map(r => { let o = r%2 ? -30 : 0, out = "";
+    for (let x = 40 + o; x < 280; x += 64) { const a = Math.max(x, 40), b = Math.min(x + 60, 280);
+      if (b - a > 6) out += `<rect x="${a}" y="${28 + r*32}" width="${b-a}" height="28" rx="3" fill="${(r+Math.round(x/64))%3 ? "#FFE6D1" : "#FFF6EC"}"/>`; }
+    return out; }).join("")),
+  tile: SVG([0,1,2].map(r => [0,1,2].map(c => {
+    const x = 78 + c*56, y = 14 + r*52; return `<rect x="${x}" y="${y}" width="50" height="46" rx="4" fill="${(r+c)%2 ? "#FFE6D1" : "#FFFFFF"}" opacity=".92"/><polygon points="${x},${y+46} ${x+50},${y} ${x+50},${y+14} ${x+14},${y+46}" fill="#fff" opacity=".35"/>`; }).join("")).join("")),
+  phc: SVG(`<ellipse cx="160" cy="158" rx="120" ry="8" fill="#000" opacity=".15"/>${[0,1,2].map(i => { const x = 56 + i*76;
+    return `<rect x="${x}" y="28" width="46" height="120" fill="#EEF1F6"/><rect x="${x+30}" y="28" width="16" height="120" fill="#C9D1DE"/><ellipse cx="${x+23}" cy="148" rx="23" ry="8" fill="#B5BFCF"/><ellipse cx="${x+23}" cy="28" rx="23" ry="8" fill="#F8FAFC"/><ellipse cx="${x+23}" cy="28" rx="11" ry="4" fill="#8E9BB0"/><rect x="${x}" y="90" width="46" height="5" fill="#FF7A1A" opacity=".9"/>`; }).join("")}`),
+  hbeam: SVG(`<ellipse cx="160" cy="160" rx="100" ry="8" fill="#000" opacity=".15"/>${[0,1].map(i => { const dx = i*40, dy = i*-14;
+    return `<g transform="translate(${70+dx} ${30+dy})"><rect x="0" y="0" width="120" height="20" rx="3" fill="#D9DEE7"/><rect x="50" y="20" width="20" height="80" fill="#B9C2D2"/><rect x="0" y="100" width="120" height="20" rx="3" fill="#D9DEE7"/><rect x="0" y="0" width="120" height="6" fill="#FF7A1A" opacity=".85"/></g>`; }).join("")}`),
+  etc: SVG(`<ellipse cx="160" cy="150" rx="86" ry="8" fill="#000" opacity=".18"/>
+    <path d="M92 118 a68 62 0 0 1 136 0 z" fill="#FF7A1A"/><rect x="148" y="48" width="24" height="70" fill="#FFB37A"/>
+    <rect x="76" y="118" width="168" height="16" rx="8" fill="#FFE6D1"/>`)
+};
+
+/* ===== 제품 카드 ===== */
+document.getElementById("cards").innerHTML = PRODUCTS.map(p => `
+  <article class="card ${p.badge ? "featured" : ""}">
+    ${p.badge ? `<span class="badge">${p.badge}</span>` : ""}
+    <div class="thumb">${p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy">` : ART[p.id]}</div>
+    <div class="card-body">
+      <h3>${p.name}</h3>
+      <div class="sub">${p.sub}</div>
+      <ul>${p.features.map(f => `<li>${f}</li>`).join("")}</ul>
+      <div class="price">${p.price ? `${won(p.price)} <small>/ ${p.unit}</small>` : `별도 협의`}</div>
+      <a class="btn" href="#calculator">${p.price ? "견적 계산하기" : "견적 문의"}</a>
+    </div>
+  </article>`).join("");
+
+/* ===== 견적 계산기 ===== */
+const PRICED = PRODUCTS.filter(p => p.price);
+document.getElementById("rows").innerHTML = PRICED.map(p => `
+  <div class="row">
+    <div class="name">${p.name}<small>단가 ${won(p.price)} / ${p.unit} · 수량 단위: ${p.unit}</small></div>
+    <input type="number" min="0" max="999999" step="1" value="0" data-id="${p.id}" aria-label="${p.name} 수량(${p.unit})">
+    <div class="line" id="line-${p.id}">0원</div>
+  </div>`).join("");
+
+function calc(){
+  let qty = 0, sub = 0; const lines = [];
+  PRICED.forEach(p => {
+    const el = document.querySelector(`input[data-id="${p.id}"]`);
+    let v = Math.floor(Number(el.value));
+    if (!Number.isFinite(v) || v < 0) v = 0;
+    const line = v * p.price;
+    qty += v; sub += line;
+    if (v > 0) lines.push({name:p.name, qty:v, unit:p.unit, price:p.price, amount:line});
+    document.getElementById("line-" + p.id).textContent = won(line);
+  });
+  const rate = sub >= 100000000 ? 0.07 : sub >= 50000000 ? 0.05 : sub >= 10000000 ? 0.03 : 0;
+  const disc = sub * rate;
+  const sup = (sub - disc) * Number(document.getElementById("support").value);
+  const supply = sub - disc + sup;
+  const vat = supply * 0.1;
+  document.getElementById("s-sub").textContent = won(sub);
+  document.getElementById("s-rate").textContent = rate ? `(${rate*100}%)` : "";
+  document.getElementById("s-disc").textContent = "-" + won(disc);
+  document.getElementById("s-sup").textContent = won(sup);
+  document.getElementById("s-supply").textContent = won(supply);
+  document.getElementById("s-vat").textContent = won(vat);
+  document.getElementById("s-total").textContent = won(supply + vat);
+  const sel = document.getElementById("support");
+  window.QUOTE = {lines, sub, rate, disc, sup, supply, vat, total:supply+vat, ship:sel.options[sel.selectedIndex].text};
+}
+document.querySelectorAll("#rows input, #support").forEach(el => el.addEventListener("input", calc));
+calc();
+
+/* ===== FAQ (카테고리 탭) ===== */
+const cats = ["전체", ...new Set(FAQS.map(f => f.cat))];
+const tabsEl = document.getElementById("tabs");
+const listEl = document.getElementById("faqList");
+listEl.innerHTML = FAQS.map(f => `
+  <details data-cat="${f.cat}"><summary><span class="cat">${f.cat}</span>${f.q}</summary><p>${f.a}</p></details>`).join("");
+tabsEl.innerHTML = cats.map((c,i) => `<button class="tab ${i===0?"on":""}" data-cat="${c}">${c}</button>`).join("");
+tabsEl.addEventListener("click", e => {
+  const b = e.target.closest(".tab"); if (!b) return;
+  tabsEl.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t === b));
+  listEl.querySelectorAll("details").forEach(d => {
+    d.hidden = !(b.dataset.cat === "전체" || d.dataset.cat === b.dataset.cat);
+    if (d.hidden) d.open = false;
+  });
+});
+
+/* ===== 자료실 (샘플 브로슈어 파일을 즉석 생성하여 다운로드) ===== */
+document.getElementById("files").innerHTML = FILES.map((f,i) => `
+  <div class="file">
+    <div class="ico">${f.tag}</div>
+    <div class="info"><h4>${f.title}</h4><span>${f.meta}</span></div>
+    <button data-i="${i}">다운로드</button>
+  </div>`).join("");
+document.getElementById("files").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const f = FILES[b.dataset.i];
+  const body = `${f.title}\n${"=".repeat(30)}\n\n${f.meta}\n\n※ 샘플 파일입니다. 실제 브로슈어 파일 경로로 교체해 주세요.\n`;
+  const url = URL.createObjectURL(new Blob([body], {type:"text/plain;charset=utf-8"}));
+  const a = document.createElement("a");
+  a.href = url; a.download = f.title.replace(/\s+/g,"_") + "_sample.txt";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+/* ===== 견적서 메일 발송 ===== */
+const SALES_EMAIL = "contact@example.com";   // 기본 받는 사람 (필요 시 수정)
+const $ = id => document.getElementById(id);
+function buildMail(){
+  const q = window.QUOTE, v = id => $(id).value.trim();
+  const L = [];
+  L.push("[건설자재 견적 요청]", "");
+  L.push("일자: " + new Date().toLocaleDateString("ko-KR"));
+  if (v("m-co")) L.push("회사명: " + v("m-co"));
+  if (v("m-nm")) L.push("담당자: " + v("m-nm"));
+  if (v("m-tel")) L.push("연락처: " + v("m-tel"));
+  if (v("m-site")) L.push("현장명/납품지: " + v("m-site"));
+  L.push("", "■ 품목 내역");
+  q.lines.forEach(l => L.push(`- ${l.name}: ${l.qty.toLocaleString("ko-KR")}${l.unit} × ${won(l.price)} = ${won(l.amount)}`));
+  L.push("", "■ 금액");
+  L.push("제품 합계: " + won(q.sub));
+  L.push("물량 할인" + (q.rate ? ` (${Math.round(q.rate*100)}%)` : "") + ": -" + won(q.disc));
+  L.push("운송 옵션(" + q.ship + "): " + won(q.sup));
+  L.push("공급가액: " + won(q.supply));
+  L.push("부가세(10%): " + won(q.vat));
+  L.push("총 예상 금액: " + won(q.total));
+  if (v("m-note")) L.push("", "■ 요청사항", v("m-note"));
+  L.push("", "※ 참고용 예상 금액이며, 실제 견적은 상담 후 확정됩니다.");
+  return {subject:"[견적 요청] " + (v("m-co") || "건설자재") + " 견적서", body:L.join("\n")};
+}
+function refreshPreview(){
+  const m = buildMail();
+  $("m-preview").textContent = "제목: " + m.subject + "\n\n" + m.body;
+}
+function setMsg(t, ok){ const e = $("m-msg"); e.textContent = t; e.classList.toggle("ok", !!ok); }
+const okMail = e => /^[^\s@,]+@[^\s@,]+\.[^\s@,]+$/.test(e);
+function validate(){
+  if (!window.QUOTE.lines.length) { setMsg("견적 계산기에서 수량을 먼저 입력해 주세요."); return false; }
+  const to = $("m-to").value.trim();
+  if (!okMail(to)) { setMsg("받는 사람 이메일을 정확히 입력해 주세요."); return false; }
+  const cc = $("m-cc").value.split(",").map(x => x.trim()).filter(Boolean);
+  if (cc.some(x => !okMail(x))) { setMsg("참조 이메일 형식을 확인해 주세요."); return false; }
+  setMsg(""); return true;
+}
+function openModal(){
+  if (!$("m-to").value) $("m-to").value = SALES_EMAIL;
+  refreshPreview();
+  setMsg(window.QUOTE.lines.length ? "" : "견적 계산기에서 수량을 먼저 입력해 주세요.");
+  $("mailModal").classList.add("open");
+}
+function closeModal(){ $("mailModal").classList.remove("open"); }
+$("openMail").addEventListener("click", openModal);
+$("m-close").addEventListener("click", closeModal);
+$("mailModal").addEventListener("click", e => { if (e.target.id === "mailModal") closeModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+$("mailModal").addEventListener("input", refreshPreview);
+$("m-send").addEventListener("click", () => {
+  if (!validate()) return;
+  const m = buildMail();
+  const cc = $("m-cc").value.split(",").map(x => x.trim()).filter(Boolean).join(",");
+  const url = "mailto:" + encodeURIComponent($("m-to").value.trim()) + "?subject=" + encodeURIComponent(m.subject)
+    + (cc ? "&cc=" + encodeURIComponent(cc) : "") + "&body=" + encodeURIComponent(m.body.replace(/\n/g, "\r\n"));
+  window.location.href = url;
+  setMsg("메일 프로그램이 열립니다. 열리지 않으면 '내용 복사'를 이용해 주세요.", true);
+});
+$("m-copy").addEventListener("click", async () => {
+  const m = buildMail(), text = "제목: " + m.subject + "\n\n" + m.body;
+  try { await navigator.clipboard.writeText(text); setMsg("복사되었습니다. 메일에 붙여넣어 보내 주세요.", true); }
+  catch (e) {
+    const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select();
+    try { document.execCommand("copy"); setMsg("복사되었습니다. 메일에 붙여넣어 보내 주세요.", true); } catch (_) { setMsg("복사에 실패했습니다. 미리보기 내용을 직접 선택해 복사해 주세요."); }
+    t.remove();
+  }
+});
+
+/* ===== 현재 위치에 맞춰 메뉴 강조 ===== */
+const links = [...document.querySelectorAll("#nav a")];
+const secs = links.map(a => document.querySelector(a.getAttribute("href")));
+function spy(){
+  const y = window.scrollY + 120;
+  let cur = 0;
+  secs.forEach((s,i) => { if (s.offsetTop <= y) cur = i; });
+  if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) cur = secs.length - 1;
+  links.forEach((a,i) => a.classList.toggle("active", i === cur));
+}
+window.addEventListener("scroll", spy, {passive:true});
+spy();
+</script>
+</body>
+</html>
